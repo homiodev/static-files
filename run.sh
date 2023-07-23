@@ -66,14 +66,14 @@ fi
 echo "Java path: $java_path"
 
 # Define the file name and path
-launcher="homio-launcher.jar"
+launcher="$root_path/homio-launcher.jar"
 
 # Check if the file exists locally
-if [[ ! -f "$root_path/$launcher" ]]; then
+if [[ ! -f "$launcher" ]]; then
     echo "$launcher does not exist locally. Downloading from GitHub..."
 
     # Download the file from GitHub
-    wget -O "$root_path/$launcher" 'https://github.com/homiodev/static-files/raw/master/homio-launcher.jar'
+    wget -O "$launcher" 'https://github.com/homiodev/static-files/raw/master/homio-launcher.jar'
 
     echo "File 'homio-launcher.jar' downloaded successfully."
 fi
