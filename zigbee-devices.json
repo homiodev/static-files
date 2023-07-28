@@ -1,0 +1,975 @@
+{
+  "version": "1",
+  "devices": [
+    {
+      "name": "Smart knob",
+      "models": [
+        "ERS-10TZBVK-AA"
+      ],
+      "icon": "far fa-circle-dot",
+      "iconColor": "#7F50AD",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "DISPLAY",
+          "icon": "far fa-circle-dot",
+          "compose": [
+            {
+              "type": "display",
+              "props": [
+                {
+                  "name": "action_rotate_left"
+                },
+                {
+                  "name": "action_rotate_right"
+                },
+                {
+                  "name": "action"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Energy meter",
+      "exposes": [
+        "switch~energy~power~voltage~current"
+      ],
+      "models": [
+        "CCB432",
+        "ZHEMI101",
+        "TS0601_bidirectional_energy meter"
+      ],
+      "icon": "fas fa-plug-circle-bolt",
+      "iconColor": "#C28A40",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "METER",
+          "background": {
+            "color": "#29393F"
+          },
+          "blockHeight": 2,
+          "icon": "fas fa-bolt-lightning",
+          "compose": [
+            {
+              "type": "display",
+              "props": [
+                {
+                  "name": "energy"
+                },
+                {
+                  "name": "power"
+                },
+                {
+                  "name": "voltage"
+                },
+                {
+                  "name": "current"
+                }
+              ]
+            },
+            {
+              "type": "toggle",
+              "options": {
+                "toggleType": "Slide"
+              },
+              "autoDiscovery": true
+            },
+            {
+              "type": "line",
+              "blockHeight": 2,
+              "widgetHeight": 1,
+              "options": {
+                "pointBorderColor": "#00B0E6"
+              },
+              "props": [
+                {
+                  "name": "power",
+                  "chart": {
+                    "source": {
+                      "kind": "property",
+                      "value": "power"
+                    },
+                    "color": "#7F83AE"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RGB controller/Bulb/Led strips",
+      "exposes": [
+        "light"
+      ],
+      "icon": "fas fa-palette",
+      "iconColor": "#7F50AD",
+      "widgets": [
+        {
+          "name": "COLOR",
+          "type": "color"
+        }
+      ]
+    },
+    {
+      "name": "Relay/Switch",
+      "exposes": [
+        "switch",
+        "state",
+        "state_right",
+        "state_left"
+      ],
+      "icon": "fas fa-plug",
+      "iconColor": "#85C240",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "RELAY",
+          "icon": "fas fa-toggle-on",
+          "compose": [
+            {
+              "type": "toggle",
+              "autoDiscovery": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Temperature and Humidity Sensor",
+      "exposes": [
+        "temperature~humidity~battery"
+      ],
+      "icon": "fas fa-cloud",
+      "iconColor": "#57A4D1",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "TEMPERATURE_SENSOR",
+          "icon": "fas fa-temperature-full",
+          "compose": [
+            {
+              "type": "display",
+              "props": [
+                {
+                  "name": "temperature"
+                },
+                {
+                  "name": "humidity"
+                },
+                {
+                  "name": "pressure"
+                }
+              ],
+              "requests": [
+                {
+                  "name": "min",
+                  "value": 16,
+                  "type": "number",
+                  "title": "Minimum expected temperature",
+                  "target": "options.chart.min",
+                  "min": -30,
+                  "max": 50
+                },
+                {
+                  "name": "max",
+                  "value": 26,
+                  "type": "number",
+                  "title": "Maximum expected temperature",
+                  "target": "options.chart.max",
+                  "min": -30,
+                  "max": 50
+                }
+              ],
+              "options": {
+                "chart": {
+                  "source": {
+                    "kind": "property",
+                    "value": "temperature"
+                  },
+                  "height": 100,
+                  "fillEmptyValues": true,
+                  "min": 16,
+                  "max": 26,
+                  "opacity": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Remote 1-button",
+      "models": [
+        "WXKG03LM_rev2",
+        "WXKG01LM",
+        "WXKG11LM"
+      ],
+      "icon": "fas fa-circle-dot",
+      "iconColor": "#D1C155",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "PUSH_BUTTON",
+          "icon": "fas fa-square-check",
+          "compose": [
+            {
+              "type": "display",
+              "index": 18,
+              "background": {
+                "color": "#30563C"
+              },
+              "blockHeight": 2,
+              "layout": "{'c':[{'w':30},{'w':70}],'r':[{'cell':[{'ha':'right','va':'middle','v':'icon','cs':1,'rs':1,'w':30},{'ha':'left','va':'middle','v':'name','cs':1,'rs':1,'w':70}]}]}",
+              "options": {
+                "valueOnClick": 1,
+                "valueOnDoubleClick": 2,
+                "valueOnHoldClick": 3,
+                "pushSource": {
+                  "kind": "variable",
+                  "value": "push",
+                  "variableType": "Float"
+                }
+              },
+              "props": [
+                {
+                  "name": "action"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Smoke Detector",
+      "exposes": [
+        "smoke"
+      ],
+      "icon": "fas fa-volcano",
+      "iconColor": "#EB6933",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "SMOKE_SENSOR",
+          "icon": "fas fa-mask-ventilator",
+          "background": {
+            "pulses": [
+              {
+                "op": "neq",
+                "value": 0,
+                "color": "red",
+                "source": {
+                  "kind": "property",
+                  "variableType": "Bool",
+                  "value": "smoke"
+                }
+              }
+            ]
+          },
+          "compose": [
+            {
+              "type": "display",
+              "index": 18,
+              "blockHeight": 2,
+              "layout": "{'c':[{'w':100}],'r':[{'cell':[{'ha':'center','va':'middle','v':'icon','cs':1,'rs':1,'w':100}]},{'cell':[{'ha':'center','va':'middle','v':'name','cs':1,'rs':1,'w':100}]}]}",
+              "options": {
+                "pushSource": {
+                  "kind": "broadcasts",
+                  "value": "SmokeDetected"
+                },
+                "valueOnClick": 1,
+                "pushConfirmMessage": "Are you sure to fire event: 'SmokeDetected'?"
+              },
+              "props": [
+                {
+                  "name": "smoke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Door Sensor",
+      "exposes": [
+        "contact"
+      ],
+      "icon": "fas fa-door-open",
+      "iconColor": "#A41CE2",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "DOOR_SENSOR",
+          "icon": "fas fa-square-check",
+          "compose": [
+            {
+              "type": "display",
+              "layout": "{'c':[{'w':15},{'w':45},{'w':40}],'r':[{'cell':[{'ha':'right','va':'middle','v':'icon','cs':1,'rs':1,'w':15},{'ha':'right','va':'middle','v':'name','cs':1,'rs':1,'w':45},{'ha':'center','va':'middle','v':'value','cs':1,'rs':1,'w':40}]}]}",
+              "props": [
+                {
+                  "name": "contact",
+                  "icon": {
+                    "value": "fas fa-door-closed",
+                    "thresholds": [
+                      {
+                        "op": "eq",
+                        "value": "true|1",
+                        "target": "fas fa-door-open"
+                      }
+                    ]
+                  },
+                  "valueConverter": "return value == true ? 'opened' : 'closed';",
+                  "iconColor": {
+                    "thresholds": [
+                      {
+                        "op": "eq",
+                        "value": "true|1",
+                        "target": "#3A75B5"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "options": {
+                "chart": {
+                  "source": {
+                    "kind": "property",
+                    "value": "contact"
+                  },
+                  "stepped": "True",
+                  "fillEmptyValues": true,
+                  "aggregateFunc": "Last",
+                  "opacity": 25,
+                  "height": 50,
+                  "smoothing": false,
+                  "min": 0,
+                  "max": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Motion and illuminance sensor",
+      "exposes": [
+        "occupancy"
+      ],
+      "icon": "fas fa-person-circle-exclamation",
+      "iconColor": "#56be9e",
+      "options": {
+        "occupancy_timeout": {
+          "min": 0,
+          "max": 59
+        }
+      },
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "MOTION_SENSOR",
+          "icon": "fas fa-person",
+          "compose": [
+            {
+              "type": "display",
+              "props": [
+                {
+                  "name": "occupancy"
+                },
+                {
+                  "name": "illuminance",
+                  "icon": {
+                    "thresholds": [
+                      {
+                        "op": "eq",
+                        "value": "true|1",
+                        "target": "fas fa-person-walking fa-beat"
+                      }
+                    ]
+                  },
+                  "iconColor": {
+                    "thresholds": [
+                      {
+                        "op": "eq",
+                        "value": "true|1",
+                        "target": "#FF0000"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "options": {
+                "chart": {
+                  "source": {
+                    "kind": "property",
+                    "value": "occupancy",
+                    "stepped": "True",
+                    "aggregateFunc": "Last",
+                    "opacity": 25,
+                    "height": 50,
+                    "smoothing": false,
+                    "min": 0,
+                    "max": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Remote 2-button",
+      "models": [
+        "lumi.remote.b286acn01",
+        "WXKG02LM_rev1",
+        "WXKG02LM"
+      ],
+      "icon": "fas fa-square-check",
+      "iconColor": "#56be9e"
+    },
+    {
+      "name": "Water leak sensor",
+      "exposes": [
+        "water_leak"
+      ],
+      "icon": "fas fa-droplet",
+      "iconColor": "#be5692",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "LEAK_SENSOR",
+          "icon": "fas fa-water",
+          "background": {
+            "pulses": [
+              {
+                "op": "neq",
+                "value": 0,
+                "color": "red",
+                "source": {
+                  "kind": "property",
+                  "variableType": "Bool",
+                  "value": "water_leak"
+                }
+              }
+            ]
+          },
+          "compose": [
+            {
+              "type": "display",
+              "index": 18,
+              "blockHeight": 2,
+              "layout": "{'c':[{'w':100}],'r':[{'cell':[{'ha':'center','va':'middle','v':'icon','cs':1,'rs':1,'w':100}]},{'cell':[{'ha':'center','va':'middle','v':'name','cs':1,'rs':1,'w':100}]}]}",
+              "options": {
+                "pushSource": {
+                  "kind": "broadcasts",
+                  "value": "WaterLeakDetected"
+                },
+                "valueOnClick": 1,
+                "pushConfirmMessage": "Are you sure to fire event: 'WaterLeakDetected'?"
+              },
+              "props": [
+                {
+                  "name": "water_leak"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cube",
+      "models": [
+        "MFKZQ01LM",
+        "CTP-R01"
+      ],
+      "icon": "fas fa-cube",
+      "iconColor": "#878fc9"
+    },
+    {
+      "name": "Vibration sensor",
+      "exposes": [
+        "vibration"
+      ],
+      "icon": "fab fa-squarespace",
+      "iconColor": "#4D9180",
+      "widgets": [
+        {
+          "type": "compose",
+          "name": "VIBRATION_SENSOR",
+          "icon": "fab fa-squarespace",
+          "compose": [
+            {
+              "type": "display",
+              "props": [
+                {
+                  "name": "vibration",
+                  "icon": {
+                    "thresholds": [
+                      {
+                        "op": "eq",
+                        "value": "true|1",
+                        "target": "fab fa-fw fa-squarespace fa-flip"
+                      }
+                    ]
+                  },
+                  "iconColor": {
+                    "thresholds": [
+                      {
+                        "op": "eq",
+                        "value": "true|1",
+                        "target": "#C94F4F"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "options": {
+                "pointBorderColor": "",
+                "chart": {
+                  "source": {
+                    "kind": "property",
+                    "value": "vibration"
+                  },
+                  "stepped": "True",
+                  "fillEmptyValues": true,
+                  "aggregateFunc": "Last",
+                  "opacity": 25,
+                  "height": 50,
+                  "smoothing": false,
+                  "min": 0,
+                  "max": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "properties": [
+    {
+      "name": "vibration",
+      "icon": "fab fa-squarespace",
+      "iconColor": "#4C61D4",
+      "order": 3015
+    },
+    {
+      "name": "strength",
+      "icon": "fa-hand-fist",
+      "iconColor": "#8A2045",
+      "order": 3010
+    },
+    {
+      "name": "contact",
+      "icon": "fa-door-open",
+      "iconColor": "#4C61D4",
+      "order": 3005
+    },
+    {
+      "name": "last_seen",
+      "icon": "fa-eye",
+      "iconColor": "#2D9C2C",
+      "order": 3000
+    },
+    {
+      "name": "smoke",
+      "icon": "fa-mask-ventilator",
+      "iconColor": "#C7AC24",
+      "order": 2995
+    },
+    {
+      "name": "water_leak",
+      "icon": "fa-water",
+      "iconColor": "#0C9AB7",
+      "order": 2990
+    },
+    {
+      "name": "battery_low",
+      "icon": "fa-battery-quarter",
+      "iconColor": "#DD5F24",
+      "order": 2985
+    },
+    {
+      "name": "illuminance",
+      "icon": "fa-sun",
+      "iconColor": "#89D636",
+      "order": 2980,
+      "alias": [
+        "illuminance_lux"
+      ]
+    },
+    {
+      "name": "humidity",
+      "icon": "fa-tint",
+      "iconColor": "#4179E0",
+      "order": 2975
+    },
+    {
+      "name": "pressure",
+      "icon": "fa-cloud-download-alt",
+      "iconColor": "#B0B0B0",
+      "order": 2970
+    },
+    {
+      "name": "occupancy",
+      "icon": "fa-walking",
+      "iconColor": "#89D636",
+      "order": 2965
+    },
+    {
+      "name": "temperature",
+      "icon": "fa-thermometer-three-quarters",
+      "iconColor": "#36B9D6",
+      "order": 2960
+    },
+    {
+      "name": "voltage",
+      "icon": "fa-bolt",
+      "iconColor": "#4BBF73",
+      "order": 2955
+    },
+    {
+      "name": "consumption",
+      "icon": "fa-car-battery",
+      "iconColor": "#43BDBF",
+      "order": 2950
+    },
+    {
+      "name": "power",
+      "icon": "fa-plug-circle-bolt",
+      "iconColor": "#9357EF",
+      "order": 2945
+    },
+    {
+      "name": "current",
+      "icon": "fa-copyright",
+      "iconColor": "#E5A54B",
+      "order": 2940
+    },
+    {
+      "name": "energy",
+      "icon": "fa-plug",
+      "iconColor": "#1F9BCF",
+      "order": 2935
+    },
+    {
+      "name": "battery",
+      "icon": "fa-battery-full",
+      "iconColor": "#32D1B9",
+      "order": 2930
+    },
+    {
+      "name": "brightness",
+      "icon": "fa-sun",
+      "iconColor": "#C4B74E",
+      "order": 2925
+    },
+    {
+      "name": "color_temp",
+      "icon": "fa-sliders-h",
+      "iconColor": "#7D37C2",
+      "order": 2920
+    },
+    {
+      "name": "linkquality",
+      "icon": "fa-signal",
+      "iconColor": "#D134AF"
+    },
+    {
+      "name": "tamper",
+      "icon": "fa-exclamation-circle",
+      "iconColor": "#BFBFBF"
+    },
+    {
+      "name": "meter_id",
+      "icon": "fa-image-portrait",
+      "iconColor": "#8533D6"
+    },
+    {
+      "name": "clear_fault",
+      "icon": "fa-broom",
+      "iconColor": "#99371F"
+    },
+    {
+      "name": "threshold_2_protection",
+      "icon": "fa-building-shield",
+      "iconColor": "#1BA191"
+    },
+    {
+      "name": "threshold_2_value",
+      "icon": "fa-square-up-right",
+      "iconColor": "#1BA191"
+    },
+    {
+      "name": "threshold_2",
+      "icon": "fa-turn-up",
+      "iconColor": "#1BA191"
+    },
+    {
+      "name": "threshold_1_value",
+      "icon": "fa-square-up-right",
+      "iconColor": "#1FA670"
+    },
+    {
+      "name": "threshold_1_protection",
+      "icon": "fa-building-shield",
+      "iconColor": "#1FA670"
+    },
+    {
+      "name": "threshold_1",
+      "icon": "fa-turn-up",
+      "iconColor": "#1FA670"
+    },
+    {
+      "name": "fault",
+      "icon": "fa-plug-circle-exclamation",
+      "iconColor": "#DD5F24"
+    },
+    {
+      "name": "smoke_density",
+      "icon": "fa-smog",
+      "iconColor": "#DD5F24"
+    },
+    {
+      "name": "click",
+      "icon": "fa-egg",
+      "iconColor": "#B0B0B0"
+    },
+    {
+      "name": "test",
+      "icon": "fa-vials",
+      "iconColor": "#A095F7"
+    },
+    {
+      "name": "sensitivity",
+      "icon": "fa-gauge",
+      "iconColor": "#D134AF"
+    },
+    {
+      "name": "selftest",
+      "icon": "fa-flask-vial",
+      "iconColor": "#32D1B9"
+    },
+    {
+      "name": "power_on_behavior",
+      "icon": "fa-soap",
+      "iconColor": "#A095F7"
+    },
+    {
+      "name": "effect",
+      "icon": "fa-hands-bubbles",
+      "iconColor": "#59C75C"
+    },
+    {
+      "name": "color_mode",
+      "icon": "fa-boxes-stacked",
+      "iconColor": "#5B60B4"
+    },
+    {
+      "name": "color_hs",
+      "icon": "fa-palette",
+      "iconColor": "#FF009B"
+    },
+    {
+      "name": "color_temp_startup",
+      "icon": "fa-sliders-h",
+      "iconColor": "#C26A37"
+    },
+    {
+      "name": "power_outage_memory",
+      "icon": "fa-memory",
+      "iconColor": "#248580"
+    },
+    {
+      "name": "power_outage_count",
+      "icon": "fa-plug-circle-xmark",
+      "iconColor": "#9E2929"
+    },
+    {
+      "name": "interlock",
+      "icon": "fa-arrow-down-up-lock",
+      "iconColor": "#7BBF43"
+    },
+    {
+      "name": "wakeup",
+      "icon": "fa-wave-square",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "shake",
+      "icon": "fa-cubes-stacked",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "tap",
+      "icon": "fa-computer-mouse",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "slide",
+      "icon": "fa-shekel-sign",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "rotate_right",
+      "icon": "fa-rotate-right",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "rotate_left",
+      "icon": "fa-rotate-left",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "fall",
+      "icon": "fa-arrow-down",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "flip180",
+      "icon": "fa-repeat",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "flip90",
+      "icon": "fa-repeat",
+      "iconColor": "#0C83B7"
+    },
+    {
+      "name": "action_from_side",
+      "icon": "fa-arrow-right-from-bracket",
+      "iconColor": "#47B70C",
+      "alias": [
+        "from_side"
+      ]
+    },
+    {
+      "name": "action_to_side",
+      "icon": "fa-arrow-right-to-bracket",
+      "iconColor": "#47B70C",
+      "alias": [
+        "to_side"
+      ]
+    },
+    {
+      "name": "action_side",
+      "icon": "fa-arrow-up-right-from-square",
+      "iconColor": "#0C83B7",
+      "alias": [
+        "side"
+      ]
+    },
+    {
+      "name": "action_angle",
+      "icon": "fa-arrow-up-right-dots",
+      "iconColor": "#D63673",
+      "alias": [
+        "angle"
+      ]
+    },
+    {
+      "name": "device_temperature",
+      "icon": "fa-thermometer-three-quarters",
+      "iconColor": "#36B9D6"
+    },
+    {
+      "name": "action_any",
+      "icon": "fa-location-crosshairs",
+      "iconColor": "#C24487"
+    },
+    {
+      "name": "action_tilt",
+      "icon": "fa-slash",
+      "iconColor": "#C24487"
+    },
+    {
+      "name": "action_vibration",
+      "icon": "fa-clover",
+      "iconColor": "#B63CBD"
+    },
+    {
+      "name": "angle_x",
+      "icon": "fa-hill-rockslide",
+      "iconColor": "#4EA32F"
+    },
+    {
+      "name": "angle_y",
+      "icon": "fa-hill-rockslide",
+      "iconColor": "#4EA32F"
+    },
+    {
+      "name": "angle_z",
+      "icon": "fa-hill-rockslide",
+      "iconColor": "#4EA32F"
+    },
+    {
+      "name": "angle_x_absolute",
+      "icon": "fa-hill-rockslide fa-flip-horizontal",
+      "iconColor": "#8FAB33"
+    },
+    {
+      "name": "angle_y_absolute",
+      "icon": "fa-hill-rockslide fa-flip-horizontal",
+      "iconColor": "#8FAB33"
+    },
+    {
+      "name": "update_available",
+      "icon": "fa-hat-cowboy-side",
+      "iconColor": "#AD23BA"
+    },
+    {
+      "name": "switch_type",
+      "icon": "fa-swatchbook",
+      "iconColor": "#20A86F"
+    },
+    {
+      "name": "led_disabled_night",
+      "icon": "fa-lightbulb",
+      "iconColor": "#2196F3"
+    },
+    {
+      "name": "action_rotate_right",
+      "icon": "fa-rotate-right",
+      "iconColor": "#33BDAF"
+    },
+    {
+      "name": "action_rotate_left",
+      "icon": "fa-rotate-left",
+      "iconColor": "#33BDAF"
+    },
+    {
+      "name": "action_transition_time",
+      "icon": "fa-stopwatch",
+      "iconColor": "#8D9428"
+    },
+    {
+      "name": "action_rate",
+      "icon": "fa-gauge-simple-high",
+      "iconColor": "#B91D6B"
+    },
+    {
+      "name": "action_step_size",
+      "icon": "fa-stairs",
+      "iconColor": "#6042C1"
+    },
+    {
+      "name": "indicator_mode",
+      "icon": "fa-traffic-light",
+      "iconColor": "#42C1BB"
+    }
+  ],
+  "propertiesWithoutVariables": [
+    "update_available",
+    "update"
+  ]
+}
