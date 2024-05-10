@@ -100,6 +100,11 @@ update_application() {
               rm -f "$root_path/homio-app.zip"
             fi
         fi
+    else
+      if [[ -f "$root_path/homio-app.jar_backup" ]]; then
+         echo "Recovery homio-app.jar backup"
+         mv "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
+      fi
     fi
 }
 
@@ -113,21 +118,6 @@ fi
 
 echo "Run $java_path -jar $root_path/$app"
 sudo "$java_path" -jar "$root_path/$app"
-exit_code=$?
-
-# Unzip install/update if result code is 4 and update file exists
-if [[ $exit_code -eq 221 ]]; then
-    echo "Update application..."
-    update_application
-else
-    echo "Homio app exit code with abnormal: $exit_code"
-    if [[ -f "$root_path/homio-app.jar_backup" ]]; then
-      echo "Recovery homio-app.jar backup"
-      cp "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
-    else
-      rm -f "$root_path/homio-app.jar"
-    fi
-fi
 
 echo "Restarting Homio"
 exec "$0"
