@@ -281,7 +281,7 @@
               "layout": "{'c':[{'w':100}],'r':[{'cell':[{'ha':'center','va':'middle','v':'icon','cs':1,'rs':1,'w':100}]},{'cell':[{'ha':'center','va':'middle','v':'name','cs':1,'rs':1,'w':100}]}]}",
               "options": {
                 "pushSource": {
-                  "kind": "broadcasts",
+                  "kind": "broadcast",
                   "value": "SmokeDetected"
                 },
                 "valueOnClick": 1,
@@ -470,7 +470,7 @@
               "layout": "{'c':[{'w':100}],'r':[{'cell':[{'ha':'center','va':'middle','v':'icon','cs':1,'rs':1,'w':100}]},{'cell':[{'ha':'center','va':'middle','v':'name','cs':1,'rs':1,'w':100}]}]}",
               "options": {
                 "pushSource": {
-                  "kind": "broadcasts",
+                  "kind": "broadcast",
                   "value": "WaterLeakDetected"
                 },
                 "valueOnClick": 1,
