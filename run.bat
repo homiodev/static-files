@@ -19,7 +19,7 @@ echo root_path: '%root_path%'
 set "java_path=java"
 where %java_path% >nul 2>&1
 if %errorlevel% neq 0 (
-    set "java_path=%root_path%/jdk-17.0.7+7-jre/bin/java"
+    set "java_path=%root_path%/jdk-21+35-jre/bin/java"
     echo Java not found. Checking local: !java_path!
 
     if exist "!java_path!" (
@@ -28,7 +28,7 @@ if %errorlevel% neq 0 (
 	     echo Java not installed. Downloading...
 
        REM Download the Java installer
-       powershell -Command "(New-Object System.Net.WebClient).DownloadFile('https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7+7/OpenJDK17U-jre_x64_windows_hotspot_17.0.7_7.zip', '%root_path%\jre.zip')"
+       powershell -Command "(New-Object System.Net.WebClient).DownloadFile('https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21+35/OpenJDK21U-jre_x64_windows_hotspot_21_35.zip', '%root_path%\jre.zip')"
 
        REM Unzip the downloaded file to the root path
        tar -xf "%root_path%\jre.zip" -C "%root_path%"
