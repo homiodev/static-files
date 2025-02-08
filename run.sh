@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Check wget,tar command is presents"
+echo "Check wget, tar command is present"
 abort=0
 for cmd in wget tar; do
 	if [ -z "$(command -v $cmd)" ]; then
@@ -37,30 +37,30 @@ if [[ -f "homio.properties" ]]; then
     done < "homio.properties"
 fi
 
-sudo mkdir -p $root_path
+$sudo mkdir -p "$root_path"
 echo "root_path: '$root_path'"
 
 java_path=$(command -v java)
-if [[ -z "$java_path" || "$($java_path -version 2>&1 | grep -oP 'version "\K\d+')" != "17" ]]; then
-  echo "Unable to find java 17 in classpath"
-  java_path="$root_path/jdk-17.0.7+7-jre/bin/java"
+if [[ -z "$java_path" || "$($java_path -version 2>&1 | grep -oP 'version "\K\d+')" != "21" ]]; then
+  echo "Unable to find Java 21 in classpath"
+  java_path="$root_path/jdk-21+35-jre/bin/java"
   if [ -x "$java_path" ]; then
   	   echo "Java is installed at path $java_path"
   	else
         echo "Java not installed. Installing..."
 
-        # Download Java 17
-        wget -O "$root_path/jre.tar.gz" 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7+7/OpenJDK17U-jre_x64_linux_hotspot_17.0.7_7.tar.gz'
+        # Download Java 21
+        wget -O "$root_path/jre.tar.gz" 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21+35/OpenJDK21U-jre_x64_linux_hotspot_21_35.tar.gz'
 
        # Extract Java archive
         tar xzf "$root_path/jre.tar.gz" -C "$root_path"
 
         # Remove the Java archive
         rm -f "$root_path/jre.tar.gz"
-        echo "Java 17 has been installed  to $java_path"
+        echo "Java 21 has been installed to $java_path"
   	fi
 else
-  echo "Found java 17 in classpath"
+  echo "Found Java 21 in classpath"
 fi
 
 echo "Java path: $java_path"
@@ -91,9 +91,9 @@ update_application() {
             echo "Remove archive $root_path/homio-app.zip"
             rm -f "$root_path/homio-app.zip"
         else
-            echo "Failed extract Homio ZIP file"
+            echo "Failed to extract Homio ZIP file"
             if [[ -f "$root_path/homio-app.jar_backup" ]]; then
-                echo "Recovery backup from $root_path/homio-app.jar_backup"
+                echo "Recovering backup from $root_path/homio-app.jar_backup"
                 mv "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
             else
               echo "Remove archive $root_path/homio-app.zip"
@@ -102,7 +102,7 @@ update_application() {
         fi
     else
       if [[ -f "$root_path/homio-app.jar_backup" ]]; then
-         echo "Recovery homio-app.jar backup"
+         echo "Recovering homio-app.jar backup"
          mv "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
       fi
     fi
@@ -117,7 +117,7 @@ else
 fi
 
 echo "Run $java_path -jar $root_path/$app"
-sudo "$java_path" -jar "$root_path/$app"
+$sudo "$java_path" -jar "$root_path/$app"
 
 echo "Restarting Homio"
 exec "$0"
