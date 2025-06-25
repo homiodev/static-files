@@ -1,28 +1,30 @@
 #!/bin/bash
 
-echo "Check required commands are present"
+set -e
+
+echo "Check wget, tar, unzip, command is present"
 abort=0
 for cmd in wget tar unzip; do
-    if [ -z "$(command -v $cmd)" ]; then
-        cat >&2 <<-EOF
-        Error: unable to find required command: $cmd
-        EOF
-        abort=1
-    fi
+	if [ -z "$(command -v $cmd)" ]; then
+		cat >&2 <<-EOF
+		Error: unable to find required command: $cmd
+		EOF
+		abort=1
+	fi
 done
 [ $abort = 1 ] && exit 1
 
 echo "Check sudo"
 sudo=
 if [ "$(id -u)" -ne 0 ]; then
-    if [ -z "$(command -v sudo)" ]; then
-        cat >&2 <<-EOF
-        Error: this app needs the ability to run commands as root.
-        You are not running as root and we are unable to find "sudo" available.
-        EOF
-        exit 1
-    fi
-    sudo="sudo -E"
+	if [ -z "$(command -v sudo)" ]; then
+		cat >&2 <<-EOF
+		Error: this app needs the ability to run commands as root.
+		You are not running as root and we are unable to find "sudo" available.
+		EOF
+		exit 1
+	fi
+	sudo="sudo -E"
 fi
 
 root_path="/opt/homio"
@@ -38,37 +40,30 @@ fi
 $sudo mkdir -p "$root_path"
 echo "root_path: '$root_path'"
 
-# Standard Java installation path
-java_home="/usr/lib/jvm/jdk-21-jre"
-java_path="$java_home/bin/java"
+jdk_dir="/usr/lib/jvm/jdk-21"
+java_path=$(command -v java)
+if [[ -z "$java_path" || "$($java_path -version 2>&1 | grep -oP 'version "\K\d+')" != "21" ]]; then
+  echo "Unable to find Java 21 in classpath"
+  java_path="$root_path/jdk-21+35-jre/bin/java"
+  if [ -x "$java_path" ]; then
+  	   echo "Java is installed at path $java_path"
+  	else
+        echo "Java not installed. Installing..."
 
-# Check if Java 21 is already installed in standard location
-if [ -x "$java_path" ]; then
-    java_version=$("$java_path" -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d. -f1)
-    if [[ "$java_version" == "21" ]]; then
-        echo "Found Java 21 in standard location: $java_path"
-    else
-        # Handle version mismatch
-        echo "Found Java $java_version at $java_path - requires Java 21"
-        java_path=""
-    fi
-fi
+        # Download Java 21
+        wget -O /tmp/jre.tar.gz 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21+35/OpenJDK21U-jre_x64_linux_hotspot_21_35.tar.gz'
+        $sudo mkdir -p "$jdk_dir"
+        $sudo tar xzf /tmp/jre.tar.gz --strip-components=1 -C "$jdk_dir"
+        rm -f /tmp/jre.tar.gz
 
-if [[ ! -x "$java_path" ]]; then
-    echo "Java 21 not found. Installing to $java_home..."
-    
-    # Download Java 21
-    $sudo mkdir -p /usr/lib/jvm
-    $sudo wget -O /tmp/jre.tar.gz 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21+35/OpenJDK21U-jre_x64_linux_hotspot_21_35.tar.gz'
-    
-    # Extract to standard location
-    $sudo tar xzf /tmp/jre.tar.gz -C /usr/lib/jvm
-    $sudo mv "/usr/lib/jvm/$(ls /usr/lib/jvm | grep jdk-21)" "$java_home"
-    $sudo rm -f /tmp/jre.tar.gz
-    
-    echo "Java 21 installed to $java_home"
+        tar xzf "$root_path/jre.tar.gz" -C "$root_path"
+        sudo ln -sf "$jdk_dir/bin/java" /usr/bin/java
+
+        rm -f "$root_path/jre.tar.gz"
+        echo "Java 21 has been installed to $java_path"
+  	fi
 else
-    echo "Using existing Java 21 installation"
+  echo "Found Java 21 in classpath"
 fi
 
 echo "Java path: $java_path"
@@ -76,35 +71,43 @@ echo "Java path: $java_path"
 # Define the file name and path
 launcher="$root_path/homio-launcher.jar"
 
-# Check if launcher exists
+# Check if the file exists locally
 if [[ ! -f "$launcher" ]]; then
-    echo "Downloading launcher from GitHub..."
+    echo "$launcher does not exist locally. Downloading from GitHub..."
+
+    # Download the file from GitHub
     wget -O "$launcher" 'https://github.com/homiodev/static-files/raw/master/homio-launcher.jar'
-    echo "Launcher downloaded successfully"
+
+    echo "File 'homio-launcher.jar' downloaded successfully."
 fi
 
 update_application() {
     if [[ -f "$root_path/homio-app.zip" ]]; then
-        echo "Update package found"
         if [[ -f "$root_path/homio-app.jar" ]]; then
-            echo "Creating backup of homio-app.jar"
+            echo "Backup $root_path/homio-app.jar to $root_path/homio-app.jar_backup"
             cp "$root_path/homio-app.jar" "$root_path/homio-app.jar_backup"
         fi
 
-        echo "Extracting update package"
+        echo "Extracting $root_path/homio-app.zip"
         if unzip -o "$root_path/homio-app.zip" -d "$root_path"; then
-            echo "Update applied successfully"
+            echo "Homio ZIP file extracted successfully."
+            echo "Remove archive $root_path/homio-app.zip"
             rm -f "$root_path/homio-app.zip"
         else
-            echo "Update failed! Restoring backup"
+            echo "Failed to extract Homio ZIP file"
             if [[ -f "$root_path/homio-app.jar_backup" ]]; then
+                echo "Recovering backup from $root_path/homio-app.jar_backup"
                 mv "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
+            else
+              echo "Remove archive $root_path/homio-app.zip"
+              rm -f "$root_path/homio-app.zip"
             fi
-            rm -f "$root_path/homio-app.zip"
         fi
-    elif [[ -f "$root_path/homio-app.jar_backup" ]]; then
-        echo "Restoring homio-app.jar from backup"
-        mv "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
+    else
+      if [[ -f "$root_path/homio-app.jar_backup" ]]; then
+         echo "Recovering homio-app.jar backup"
+         mv "$root_path/homio-app.jar_backup" "$root_path/homio-app.jar"
+      fi
     fi
 }
 
@@ -116,12 +119,9 @@ else
     app="homio-launcher.jar"
 fi
 
-echo "Starting Homio: $java_path -jar $root_path/$app"
+echo "Run $java_path -jar $root_path/$app"
 $sudo "$java_path" -jar "$root_path/$app"
-
-exit_code=$?
-echo "Homio exited with code: $exit_code"
 
 echo "Restarting Homio"
 sleep 1
-exec "$0" "$@"
+exec "$0"
