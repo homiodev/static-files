@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 echo "Check required commands are present"
 abort=0
 for cmd in wget tar unzip; do
@@ -121,5 +119,9 @@ fi
 echo "Starting Homio: $java_path -jar $root_path/$app"
 $sudo "$java_path" -jar "$root_path/$app"
 
+exit_code=$?
+echo "Homio exited with code: $exit_code"
+
 echo "Restarting Homio"
-exec "$0"
+sleep 1
+exec "$0" "$@"
