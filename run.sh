@@ -42,26 +42,42 @@ echo "root_path: '$root_path'"
 
 jdk_dir="/usr/lib/jvm/jdk-21"
 java_path=$(command -v java)
-if [[ -z "$java_path" || "$($java_path -version 2>&1 | grep -oP 'version "\K\d+')" != "21" ]]; then
+arch=$(uname -m)
+os=$(uname -s | tr '[:upper:]' '[:lower:]')
+
+# Detect JDK URL based on arch
+case "$arch" in
+  armv7l)
+    jdk_url="https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-arm32-vfp-hflt.tar.gz"
+    ;;
+  aarch64)
+    jdk_url="https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-aarch64.tar.gz"
+    ;;
+  x86_64)
+    jdk_url="https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-amd64.tar.gz"
+    ;;
+  *)
+    echo "Unsupported architecture: $arch"
+    exit 1
+    ;;
+esac
+
+if [[ -z "$java_path" || "$($java_path -version 2>&1 | grep -oP 'version \"\K\d+')" != "21" ]]; then
   echo "Unable to find Java 21 in classpath"
-  java_path="$root_path/jdk-21+35-jre/bin/java"
+  java_path="$jdk_dir/bin/java"
   if [ -x "$java_path" ]; then
-  	   echo "Java is installed at path $java_path"
-  	else
-        echo "Java not installed. Installing..."
+    echo "Java is installed at path $java_path"
+  else
+    echo "Java not installed. Installing..."
 
-        # Download Java 21
-        wget -O /tmp/jre.tar.gz 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21+35/OpenJDK21U-jre_x64_linux_hotspot_21_35.tar.gz'
-        $sudo mkdir -p "$jdk_dir"
-        $sudo tar xzf /tmp/jre.tar.gz --strip-components=1 -C "$jdk_dir"
-        rm -f /tmp/jre.tar.gz
+    wget -O /tmp/jre.tar.gz "$jdk_url"
+    sudo mkdir -p "$jdk_dir"
+    sudo tar xzf /tmp/jre.tar.gz --strip-components=1 -C "$jdk_dir"
+    sudo ln -sf "$jdk_dir/bin/java" /usr/bin/java
+    rm -f /tmp/jre.tar.gz
 
-        tar xzf "$root_path/jre.tar.gz" -C "$root_path"
-        sudo ln -sf "$jdk_dir/bin/java" /usr/bin/java
-
-        rm -f "$root_path/jre.tar.gz"
-        echo "Java 21 has been installed to $java_path"
-  	fi
+    echo "Java 21 has been installed to $jdk_dir"
+  fi
 else
   echo "Found Java 21 in classpath"
 fi
