@@ -136,7 +136,8 @@ else
 fi
 
 echo "Run $java_path -jar $root_path/$app"
-$sudo "$java_path" -jar "$root_path/$app"
+java_opts="--add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED"
+$sudo "$java_path" $java_opts -jar "$root_path/$app"
 
 echo "Restarting Homio"
 sleep 1
